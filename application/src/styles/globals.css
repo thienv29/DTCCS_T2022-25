@@ -1,0 +1,78 @@
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.h-100v {
+    height: 100vh
+}
+
+
+/* signin */
+.profile {
+    min-width: 500px !important;
+    max-width: 800px !important;
+}
+
+.mr-2 {
+    margin-right: 10px;
+}
+
+
+.btn-control-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.card-cluster:hover, .card-cluster-plus:hover {
+    background: var(--bs-primary);
+    color: white;
+}
+
+.card-cluster-plus {
+    height: 50px;
+    padding: 20px;
+    border: 1px dashed darkgrey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    transition: 0.3s all;
+}
+
+.card-cluster {
+    height: 50px;
+    padding: 20px;
+    border: 1px solid darkgrey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    transition: 0.3s all;
+
+}
+
+.workspace-container{
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 900px;
+    min-width: 500px;
+    width: 100%;
+}
+.mb-30{
+    margin-bottom: 30px;
+}

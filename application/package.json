@@ -1,0 +1,35 @@
+{
+  "name": "blockchain-hospital-document-manage",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@moralisweb3/common-evm-utils": "^2.18.1",
+    "@moralisweb3/next": "^2.18.0",
+    "axios": "^1.3.4",
+    "bootswatch": "^5.2.3",
+    "eslint": "8.36.0",
+    "eslint-config-next": "13.2.4",
+    "ethers": "^5.7.2",
+    "formidable": "^2.1.1",
+    "ipfs-http-client": "^60.0.0",
+    "mongoose": "^7.0.3",
+    "moralis": "^2.18.0",
+    "next": "13.2.4",
+    "next-auth": "^4.20.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.8.0",
+    "reactstrap": "9.1.5",
+    "wagmi": "^0.12.6"
+  },
+  "devDependencies": {
+    "@ethersproject/abi": "^5.4.7",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0"
+  }
+}
