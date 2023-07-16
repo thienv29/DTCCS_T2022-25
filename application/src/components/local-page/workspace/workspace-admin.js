@@ -18,7 +18,8 @@ export default function WorkspaceAdmin({user}) {
     }, [])
 
     const getCluster = async () => {
-        const clusterCreated = await contract.getClusters()
+        const clusterCreated = await contract.getClustersByAuthor()
+        console.log(clusterCreated);
         setClusters(clusterCreated)
     }
     const handleClickCluster = (idCluster) => {
@@ -29,7 +30,7 @@ export default function WorkspaceAdmin({user}) {
         <div className={'workspace-container'}>
 
             <div className={'header-cluster'}>
-                <h3 className={'text-center'}>Clusters</h3>
+                <h3 className={'text-center'}>Cụm</h3>
             </div>
             <div>
                 <Row>
@@ -38,14 +39,14 @@ export default function WorkspaceAdmin({user}) {
                             <div className={'card-cluster mt-4 cursor-pointer'}
                                  onClick={() => handleClickCluster(e.id)}
                             >
-                                {e.name}
+                                {e.name != '' ? e.name : 'Thư viện - Thông tin học'}
                             </div>
 
                         </Col>
                     )}
-                    <Col md={4}>
+                    {clusters.length < 3 && <Col md={4}>
                         <div className={'card-cluster-plus mt-4 cursor-pointer '} onClick={toggleAddCluster}>+</div>
-                    </Col>
+                    </Col>}
                 </Row>
 
 

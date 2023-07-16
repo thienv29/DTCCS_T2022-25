@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import Link from "next/link";
+import {signOut} from "next-auth/react";
+import {Button} from "reactstrap";
 
 function Example(args) {
     const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +12,8 @@ function Example(args) {
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
                 <div className="container">
-                    <Link className="navbar-brand" href="/"><img src="/logo.png" alt="logo" width={80} height={50}/></Link>
+                    <Link className="navbar-brand" href="/"><img src="/logo.png" alt="logo" width={80}
+                                                                 height={50}/></Link>
                     <button className="navbar-toggler" type="button" onClick={toggle} data-bs-toggle="collapse"
                             data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false"
                             aria-label="Toggle navigation">
@@ -27,12 +30,18 @@ function Example(args) {
                             <li className="nav-item">
                                 <Link className="nav-link" href="/user">Profile</Link>
                             </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" href="/documents">Documents</Link>
+                            </li>
 
                         </ul>
-                        <form className="d-flex">
-                            <input className="form-control me-sm-2" type="search" placeholder="Search"/>
-                            <button className="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                        </form>
+                        <Button
+                            color="danger"
+                            size="sm"
+                            onClick={() => signOut({redirect: "/"})}
+                        >
+                            Sign out
+                        </Button>
                     </div>
                 </div>
             </nav>

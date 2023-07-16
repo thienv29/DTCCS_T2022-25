@@ -2,19 +2,22 @@ import {Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, Mo
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {getContract} from "@/core/utils/connect-contract";
+import {Catalog} from "@/core/constant/catalog";
+import Moralis from "moralis";
 
 export default function ModalAddDocument(props) {
     const {isOpen, toggle, user} = props;
     const [fileSelected, setFileSelected] = useState();
     const [documentName, setDocumentName] = useState();
     const [documentDes, setDocumentDes] = useState();
+    const [documentCate, setDocumentCate] = useState();
     const [clusterSelected, setClusterSelected] = useState();
     const [clusters, setClusters] = useState([]);
     const [isCreating, setIsCreating] = useState(false);
 
     const contract = getContract();
     useEffect(() => {
-        contract.on('CreateCluster', (eventArgs) => {
+        contract.on('CreateCluster', () => {
             getCluster();
         })
         getCluster();
@@ -45,8 +48,8 @@ export default function ModalAddDocument(props) {
             const formData = new FormData();
             formData.append("myFile", fileSelected);
             const {data} = await axios.post("/api/document/file/upload", formData);
-            await contract.createFile(documentName, documentDes, data[0].path, getNow(), clusterSelected);
-        }catch (e) {
+            await contract.createFile(documentName, documentDes, data[0].path, getNow(),documentCate, clusterSelected);
+        } catch (e) {
             console.log(e)
         }
         setIsCreating(false)
@@ -64,6 +67,7 @@ export default function ModalAddDocument(props) {
                         <FormGroup>
                             <Label tag="h6">Tên tài liệu</Label>
                             <Input
+                                require
                                 name="name"
                                 placeholder="Tên tài liệu"
                                 type="text"
@@ -72,8 +76,9 @@ export default function ModalAddDocument(props) {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label tag="h6">Tên tài liệu</Label>
+                            <Label tag="h6">Mô tả tài liệu</Label>
                             <Input
+                                require
                                 name="name"
                                 placeholder="Mô tả"
                                 type="textarea"
@@ -84,6 +89,7 @@ export default function ModalAddDocument(props) {
                         <FormGroup>
                             <Label tag="h6">Tệp</Label>
                             <Input
+                                require
                                 type="file"
                                 id="upload-file"
                                 className="mr-2"
@@ -93,6 +99,7 @@ export default function ModalAddDocument(props) {
                         <FormGroup>
                             <Label tag="h6">Cụm</Label>
                             <Input
+                                require
                                 name="role"
                                 type="select"
                                 value={clusterSelected}
@@ -100,7 +107,22 @@ export default function ModalAddDocument(props) {
                             >
                                 <option value={null}>Chưa chọn</option>
                                 {clusters.map((clus) =>
-                                    <option value={clus.id}>{clus.name}</option>
+                                    <option value={clus.id} key={clus.id}>{clus.name}</option>
+                                )}
+                            </Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label tag="h6">Danh mục</Label>
+                            <Input
+                                require
+                                name="role"
+                                type="select"
+                                value={documentCate}
+                                onChange={(e) => setDocumentCate(e.target.value)}
+                            >
+                                <option value={null}>Chưa chọn</option>
+                                {Catalog.map((item) =>
+                                    <option value={item} key={item}>{item}</option>
                                 )}
                             </Input>
                         </FormGroup>

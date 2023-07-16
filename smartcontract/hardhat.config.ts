@@ -1,19 +1,19 @@
-// require('dotenv').config();
+
+
+
 // require("@nomiclabs/hardhat-ethers");
-// require("@nomiclabs/hardhat-etherscan");
 
 // module.exports = {
-//   defaultNetwork: "polygon_mumbai",
+//   defaultNetwork: "goerli",
 //   networks: {
 //     hardhat: {
+//       allowUnlimitedContractSize: true
 //     },
-//     polygon_mumbai: {
-//       url: "https://fragrant-twilight-isle.matic-testnet.discover.quiknode.pro/97de336ecd9e1c8706fcb05dbe9c3d2a219bbbc8/",
-//       accounts: [process.env.PRIVATE_KEY]
+//     goerli: {
+//       url: "https://green-alien-pallet.ethereum-goerli.discover.quiknode.pro/75510ec1797c18a784f14ab8e160e47ffbc22c97/",
+//       accounts: ["bf13ae02dbbd28398d057cc99859b1a4c6ebf1c9da8488c5b3d0534e1b91748e"],
+//       allowUnlimitedContractSize: true
 //     }
-//   },
-//   etherscan: {
-//     apiKey: process.env.POLYGONSCAN_API_KEY
 //   },
 //   solidity: {
 //     version: "0.8.9",
@@ -24,6 +24,16 @@
 //       }
 //     }
 //   },
+//   paths: {
+//     sources: "./contracts",
+//     tests: "./test",
+//     cache: "./cache",
+//     artifacts: "./artifacts"
+//   },
+//   mocha: {
+//     timeout: 20000
+//   },
+//   allowUnlimitedContractSize: true
 // }
 
 

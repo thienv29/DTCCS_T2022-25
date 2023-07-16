@@ -64,7 +64,7 @@
 
 }
 
-.workspace-container{
+.workspace-container {
     margin-top: 100px;
     display: flex;
     flex-direction: column;
@@ -73,6 +73,12 @@
     min-width: 500px;
     width: 100%;
 }
-.mb-30{
+
+.mb-30 {
     margin-bottom: 30px;
+}
+
+.mt-100 {
+    margin-top: 100px;
+
 }

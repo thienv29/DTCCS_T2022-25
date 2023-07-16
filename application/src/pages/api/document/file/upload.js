@@ -2,8 +2,8 @@
 import formidable from "formidable";
 import path from "path";
 import fs from "fs/promises";
-import {connectDb} from "@/core/utils/connectDb";
 import Moralis from "moralis";
+import {removeSpace} from "@/core/utils/removeSpace";
 
 export const config = {
     api: {
@@ -16,7 +16,7 @@ const readFile = (req, saveLocally) => {
     if (saveLocally) {
         options.uploadDir = path.join(process.cwd(), "/public/files");
         options.filename = (name, ext, path, form) => {
-            return Date.now().toString() + "_" + path.originalFilename;
+            return Date.now().toString() + "_" + removeSpace(path.originalFilename);
         };
     }
     options.maxFileSize = 4000 * 1024 * 1024;
@@ -39,14 +39,13 @@ const saveToIPFS = async (newFilename) => {
     }
     const abi = [
         {
-            path: "http://localhost:3000/public/files/" + newFilename,
-            content: "base64",
+            path: newFilename,
+            content: await fs.readFile(process.cwd() + '/public/files/'+newFilename, {encoding: 'base64'}),
         },
     ];
     return await Moralis.EvmApi.ipfs.uploadFolder({abi});
 }
 export default async function handler(req, res) {
-    await connectDb();
     try {
         await fs.readdir(path.join(process.cwd() + "/public", "/files"));
     } catch (error) {
@@ -54,5 +53,6 @@ export default async function handler(req, res) {
     }
     const fileUploaded = await readFile(req, true);
     const response = await saveToIPFS(fileUploaded.files.myFile.newFilename);
-    res.json(response);
+    await fs.unlink(path.join(process.cwd() + "/public", "/files", fileUploaded.files.myFile.newFilename));
+    return res.json(response);
 }

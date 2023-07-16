@@ -13,6 +13,7 @@ export default function ModalAddCluster(props) {
         setIsCreating(true);
         await contract.createCluster(clusterName);
         toggle();
+        setIsCreating(false);
 
     }
 
@@ -27,6 +28,7 @@ export default function ModalAddCluster(props) {
                         <FormGroup>
                             <Label tag="h6">Tên Cụm</Label>
                             <Input
+                                require
                                 name="name"
                                 type="text"
                                 value={clusterName}
@@ -36,6 +38,7 @@ export default function ModalAddCluster(props) {
                         <FormGroup>
                             <Label tag="h6">Mô tả</Label>
                             <Input
+                                require
                                 type="textarea"
                                 className="mr-2"
                                 value={description}

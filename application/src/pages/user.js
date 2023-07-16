@@ -1,9 +1,9 @@
 import {getSession, signOut} from "next-auth/react";
 import {Button, Card, Form, FormGroup, Input, Label} from "reactstrap";
-import axios from "axios";
 import {useEffect, useState} from "react";
 import {useRouter} from 'next/router'
 import ROLE from "./../core/constant/role";
+import {getContract} from "@/core/utils/connect-contract";
 
 function User({user}) {
     const [profile, setProfile] = useState();
@@ -11,41 +11,39 @@ function User({user}) {
     const [role, setRole] = useState();
     const [isEditableRole, setIsEditableRole] = useState(false);
     const router = useRouter();
-
     useEffect(() => {
-        const getProfile = async () => {
-            const profileCreated = (
-                await axios.get("/api/user/get-user?address=" + user.address)
-            ).data;
-            setProfile({
-                ...user,
-                name: profileCreated.name,
-                role: profileCreated.role,
-            });
-            setName(profileCreated.name);
-            setRole(profileCreated.role);
-            if (profileCreated.role != null) {
-                setIsEditableRole(true)
-
+        const contract = getContract();
+        contract.on('UserUpdated', (eventArgs) => {
+            if (user.address == eventArgs){
+                router.push('/user')
             }
-        };
-        getProfile();
-    }, [user]);
+        })
+        getProfile(contract);
+    }, []);
+
+
+    const getProfile = async (contract) => {
+
+        const profileCreated = await contract.getMe();
+        setProfile({
+            ...user,
+            name: profileCreated.name,
+            role: profileCreated.role,
+        });
+        setName(profileCreated.name);
+        setRole(profileCreated.role);
+        if (profileCreated.role != ROLE.NONE) {
+            setIsEditableRole(true)
+
+        }
+    };
 
     const updateProfile = async () => {
         if (role == null) {
             console.error("role is null");
             return;
         }
-        const userUpdated = await axios.post("/api/user/update", {
-            address: profile.address,
-            name,
-            role,
-        });
-        if (userUpdated) {
-            console.log("update profile success");
-            router.push('/user')
-        }
+        await getContract().updateUser(name, role)
     };
 
     return (
@@ -86,17 +84,17 @@ function User({user}) {
                     <FormGroup>
                         <Label tag="h5">Quyền</Label>
                         <Input
+                            require
                             name="role"
                             type="select"
                             value={role}
                             disabled={isEditableRole}
                             onChange={(e) => setRole(e.target.value)}
-                            style={{color: isEditableRole ? "black" : "white"}}
+                            // style={{color: isEditableRole ? "black" : "white"}}
                         >
-                            <option value={null}>Chưa chọn</option>
-                            <option value={ROLE.STUDENT}>Học sinh</option>
-                            <option value={ROLE.TEACHER}>Giáo viên</option>
-                            <option value={ROLE.ADMIN}>Quản lý</option>
+                            <option value={ROLE.NONE}>Chưa chọn</option>
+                            <option value={ROLE.USER}>Người dùng</option>
+                            <option value={ROLE.REVIEWER}>Người kiểm duyệt</option>
                         </Input>
                     </FormGroup>
                 </Form>
@@ -104,7 +102,7 @@ function User({user}) {
                     <Button
                         color="danger"
                         size="sm"
-                        onClick={() => signOut({redirect: "/signin"})}
+                        onClick={() => signOut({redirect: "/"})}
                     >
                         Sign out
                     </Button>
@@ -130,7 +128,7 @@ export async function getServerSideProps(context) {
     if (!session) {
         return {
             redirect: {
-                destination: "/signin",
+                destination: "/",
                 permanent: false,
             },
         };

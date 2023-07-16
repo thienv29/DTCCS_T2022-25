@@ -2,20 +2,17 @@ import ROLE from "../../core/constant/role";
 import {useRouter} from "next/router";
 import {getSession} from "next-auth/react";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import WorkspaceAdmin from "@/components/local-page/workspace/workspace-admin";
-import WorkspaceStudent from "@/components/local-page/workspace/workspace-student";
-import WorkspaceTeacher from "@/components/local-page/workspace/workspace-teacher";
+import WorkspaceUser from "@/components/local-page/workspace/workspace-user";
+import {getContract} from "@/core/utils/connect-contract";
 
 export default function Index({user}) {
     const [profile, setProfile] = useState();
     const router = useRouter();
     useEffect(() => {
         const getProfile = async () => {
-            const profileCreated = (
-                await axios.get("/api/user/get-user?address=" + user.address)
-            ).data;
-            if (profileCreated.role == null) {
+            const profileCreated = await getContract().getMe();
+            if (profileCreated.role == 0) {
                 router.push("/user");
             }
             setProfile({
@@ -31,9 +28,8 @@ export default function Index({user}) {
         <>
             {profile && (
                 <div className={'flex-center'}>
-                    {profile.role == ROLE.ADMIN && <WorkspaceAdmin user={user}/>}
-                    {profile.role == ROLE.STUDENT && <WorkspaceStudent user={user}/>}
-                    {profile.role == ROLE.TEACHER && <WorkspaceTeacher user={user}/>}
+                    {profile.role == ROLE.REVIEWER && <WorkspaceAdmin user={user}/>}
+                    {profile.role == ROLE.USER && <WorkspaceUser user={user}/>}
                 </div>
             )}
         </>
@@ -47,7 +43,7 @@ export async function getServerSideProps(context) {
     if (!session) {
         return {
             redirect: {
-                destination: "/signin",
+                destination: "/",
                 permanent: false,
             },
         };

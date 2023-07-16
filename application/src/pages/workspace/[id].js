@@ -5,15 +5,13 @@ import {useEffect, useState} from "react";
 import {getLinkFromDoc} from "@/core/utils/get-link-from-doc";
 import {AiOutlineDownload} from "react-icons/ai";
 import {getContract} from "@/core/utils/connect-contract";
-import axios from "axios";
 import {useRouter} from "next/router";
 import {getSession} from "next-auth/react";
 import {BiTimer} from "react-icons/bi";
 
-export default function cluster({clusterId, user}) {
+export default function Cluster({clusterId, user}) {
     const [documents, setDocuments] = useState([]);
     const [clusterCur, setClusterCur] = useState();
-    const [users, setUsers] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -23,12 +21,12 @@ export default function cluster({clusterId, user}) {
             getDocuments(contract);
         });
         contract.on('AcceptFileCluster', (eventArgs) => {
-            if (eventArgs === user.address){
+            if (eventArgs === user.address) {
                 getDocuments(contract);
             }
         });
         contract.on('RejectFileCluster', (eventArgs) => {
-            if (eventArgs === user.address){
+            if (eventArgs === user.address) {
                 getDocuments(contract);
             }
         });
@@ -37,23 +35,22 @@ export default function cluster({clusterId, user}) {
     }, []);
     const getDocuments = async (contract) => {
         const data = await contract.getFilesByCluster(clusterId)
-        const resUser = await axios.post('/api/user/get-user-by-addresses', {addresses: data.map(e => e.author)})
-        setUsers(resUser.data);
         setDocuments(data)
     };
     const getClusterById = async (contract) => {
         const data = await contract.getClusterById(clusterId)
         if (data.name == '') {
             router.push('/workspace');
-        };
+        }
+        ;
         setClusterCur(data);
     };
-    
+
     const acceptFile = async (fileId) => {
         const contract = getContract();
         await contract.acceptFile(clusterId, fileId);
     }
-    
+
     const rejectFile = async (fileId) => {
         const contract = getContract();
         await contract.rejectFile(clusterId, fileId);
@@ -82,19 +79,23 @@ export default function cluster({clusterId, user}) {
                             <tr key={index}>
                                 <th scope="row">{index}</th>
                                 <td>{doc.name}</td>
-                                <td>{users.find(u => u.address == doc.author).name}</td>
+                                <td>{doc.authorName}</td>
                                 <td className="text-center">
                                     {doc.isAvailable == 0 && <BiTimer/>}
-                                    {doc.isAvailable == 1 && <GiConfirmed color={"green"}/> }
-                                    {doc.isAvailable == 2 &&  <TbBan color={"red"}/>}
+                                    {doc.isAvailable == 1 && <GiConfirmed color={"green"}/>}
+                                    {doc.isAvailable == 2 && <TbBan color={"red"}/>}
                                 </td>
                                 <td>{doc.createdAt}</td>
                                 <td>
                                     <div className={'d-flex'}>
-                                        <Button className={'mr-2'} color={'primary'} onClick={() => acceptFile(doc.id)}><GiConfirmed size={20}/></Button>
-                                        <Button color={'danger'} className={'mr-2'} onClick={() => rejectFile(doc.id)}><TbBan size={20}/></Button>
+                                        {doc.isAvailable == 0 && <Button className={'mr-2'} color={'primary'}
+                                                                         onClick={() => acceptFile(doc.id)}><GiConfirmed
+                                            size={20}/></Button>}
+                                        {doc.isAvailable == 0 && <Button color={'danger'} className={'mr-2'}
+                                                                         onClick={() => rejectFile(doc.id)}><TbBan
+                                            size={20}/></Button>}
                                         <a className={'btn btn-secondary'}
-                                           href={doc ? getLinkFromDoc(doc) : ''}>
+                                           href={doc ? getLinkFromDoc(doc) : ''} target={"_blank"}>
                                             <AiOutlineDownload/>
                                         </a>
                                     </div>
@@ -120,7 +121,7 @@ export async function getServerSideProps(context) {
     if (!session) {
         return {
             redirect: {
-                destination: "/signin",
+                destination: "/",
                 permanent: false,
             },
         };
